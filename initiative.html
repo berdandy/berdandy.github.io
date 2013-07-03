@@ -1,8 +1,6 @@
 <html>
 <head>
 	<title>Initiative</title>
-
-
 </head>
 <body>
 	<h1>Results:</h1>
@@ -10,16 +8,51 @@
 </body>
 	<script>
 		var players = [
-			{ name:'one', initMod:'4' },
-			{ name:'two', initMod:'2' },
-			{ name:'three', initMod:'-1' }
+			{ name:'Phobia', initMod:3 },
+			{ name:'Tom', initMod:2 },
+			{ name:'SomeGuy', initMod:-1 }
 		];
 
 		var enemies = [
-			{ name:'e', initMod:'3' }
+			{ name:'Goblins', initMod:3 }
 		];
 
-		document.getElementById('results').innerHTML = 'foo';
+		function rollInitiative(entityList) {
+			for (var idx = 0, num = entityList.length; idx < num; ++idx) {
+				entityList[idx].die = Math.floor(Math.random()*20) + 1;
+			}
+
+			entityList.sort(function(a,b) {
+				var diff = (b.die + b.initMod) - (a.die + a.initMod);
+				if (diff) {
+					return diff;
+				}
+				return b.initMod - a.initMod;
+			});
+		};
+
+		function showList(entityList) {
+
+			var list = document.createElement('ul');
+			for (var idx = 0, num = entityList.length; idx < num; ++idx) {
+				var li = document.createElement('li');
+				list.appendChild(li);
+
+				var e = entityList[idx];
+				li.innerHTML = e.name + ' = (' + e.die + '+' + e.initMod + ') = ' +
+					(e.die == 20 ? "<span style='color:green;'>NATURAL 20!</span>" : 
+					e.die == 1 ? "<span style='color:red;'>NATURAL 1!</span>" :
+					(e.die + e.initMod));
+			}
+			document.getElementById('results').appendChild(list);
+		}
+
+		rollInitiative(players);
+		rollInitiative(enemies);
+
+		showList(players);
+		showList(enemies);
+
 
 	</script>
 </html>
